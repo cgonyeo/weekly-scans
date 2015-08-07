@@ -9,7 +9,7 @@ import qualified Data.Text as T
 data Hostname = Hostname T.Text
               | Unknown deriving(Show,Eq,Read)
 
-data Host = Host Hostname Text deriving(Show,Eq,Read)
+data Host = Host Hostname T.Text deriving(Show,Eq,Read)
 
 main :: IO ()
 main = shelly $ do
@@ -37,7 +37,7 @@ parseScanLines (x:xs) =
                 then if (T.last $ last ws) == ')'
                          then Host (Hostname $ last $ init ws)
                                    (T.init $ T.tail $ last ws)
-                                 : parseScanLines xs
+                                : parseScanLines xs
                          else Host Unknown (last ws) : parseScanLines xs
-            else parseScanLines xs
+                else parseScanLines xs
         _ -> parseScanLines xs
