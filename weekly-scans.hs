@@ -6,10 +6,7 @@ import Data.List
 
 import qualified Data.Text as T
 
-data Hostname = Hostname T.Text
-              | Unknown deriving(Show,Eq,Read)
-
-data Host = Host Hostname T.Text deriving(Show,Eq,Read)
+data Host = Host (Maybe T.Text) T.Text deriving(Show,Eq,Read)
 
 main :: IO ()
 main = shelly $ do
@@ -35,9 +32,9 @@ parseScanLines (x:xs) =
         ("Nmap":"scan":ws) ->
             if (T.words $ head xs) !! 2 == "up"
                 then if (T.last $ last ws) == ')'
-                         then Host (Hostname $ last $ init ws)
+                         then Host (Just $ last $ init ws)
                                    (T.init $ T.tail $ last ws)
                                 : parseScanLines xs
-                         else Host Unknown (last ws) : parseScanLines xs
+                         else Host Nothing (last ws) : parseScanLines xs
                 else parseScanLines xs
         _ -> parseScanLines xs
